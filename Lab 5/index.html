@@ -14,6 +14,7 @@
     <body>
         <!-- Accessibility: skip link -->
         <a href="#main-content" class="skip-link">Skip to main content</a>
+
         <!-- ======= HEADER / NAVBAR ======= -->
         <header class="site-header">
             <nav class="nav conainer" aria-label="Main navigation"> 
@@ -28,7 +29,7 @@
                 </ul>
 
                 <div class="nav__actions">
-                    <input type="search" class="nav__search" placeholder="Search Products" aria-label="Search products"/>
+                    <input type="search" id ="searchInout"class="nav__search" placeholder="Search Products" aria-label="Search products"/>
                     <a href="login.html" class="btn btn--ghost">Login</a>
                     <a href="signup.html" class="btn btn--ghost">Sign Up</a>
                     <button class="icon-button" aria-label="View cart">
@@ -84,16 +85,16 @@
                     <section class="filters__group">
                         <h3 class="filters__heading">Category</h3>
                         <label class="filters__option">
-                            <input type="checkbox" /> Men
+                            <input type="checkbox" value="men" class="filter-category" /> Men
                         </label>
                         <label class="filters__option">
-                            <input type="checkbox" /> Women
+                            <input type="checkbox" value="women" class="filter-category" /> Women
                         </label>
                         <label class="filters__option">
-                            <input type="checkbox" /> Accessories
+                            <input type="checkbox" value="accessories" class="filter-category" /> Accessories
                         </label>
                         <label class="filters__option">
-                            <input type="checkbox" /> Sneakers
+                            <input type="checkbox" value="sneakers" class="filter-category" /> Sneakers
                         </label>
                     </section>
 
@@ -141,7 +142,10 @@
 
                     <div class="product-grid">
                         <!-- Product Card 1 -->
-                        <article class="product-card fade-up fade-delay-2">
+                        <article class="product-card fade-up fade-delay-2"
+                                data-name="oversized black hoodie"
+                                data-category="men unisex"
+                                data-type="hoodie streetwear">
                             <img
                                 src="images/product-1.jpg"
                                 alt="Oversized black hoodie"
@@ -157,7 +161,10 @@
                             </div>
                         </article>
                         <!-- Product Card 2 -->
-                        <article class="product-card fade-up fade-delay-2">
+                        <article class="product-card fade-up fade-delay-2"
+                                data-name="pastel cropped jacket"
+                                data-category="women"
+                                data-type="jacket casual">
                             <img
                                 src="images/product-2.jpg"
                                 alt="Pastel cropped jacket"
@@ -173,7 +180,10 @@
                             </div>
                         </article>             
                         <!-- Product Card 3 -->
-                        <article class="product-card fade-up fade-delay-2">
+                        <article class="product-card fade-up fade-delay-2"
+                                data-name="chunky white sneakers"
+                                data-category="men"
+                                data-type="sneakers shoes">
                             <img
                             src="images/product-3.jpg"
                             alt="White chunky sneakers"
@@ -189,7 +199,10 @@
                             </div>
                         </article>
                         <!-- Product Card 4 -->
-                        <article class="product-card fade-up fade-delay-2">
+                        <article class="product-card fade-up fade-delay-2"
+                                data-name="minimal beige tote"
+                                data-category="accessories"
+                                data-type="accessories bag">
                             <img
                             src="images/product-4.jpg"
                             alt="Minimal beige tote bag"
@@ -205,7 +218,10 @@
                             </div>
                         </article>  
                         <!-- Product Card 5 -->
-                        <article class="product-card fade-up fade-delay-2">
+                        <article class="product-card fade-up fade-delay-2"
+                                data-name="relaxed fit jeans"
+                                data-category="men"
+                                data-type="jeans denim">
                             <img
                             src="images/product-5.jpg"
                             alt="Blue relaxed fit jeans"
@@ -221,7 +237,10 @@
                             </div>
                         </article>           
                         <!-- Product Card 6 -->
-                        <article class="product-card fade-up fade-delay-2">
+                        <article class="product-card fade-up fade-delay-2"
+                                data-name="leather jacket"
+                                data-category="men"
+                                data-type="jacket leather">
                             <img
                             src="images/product-6.jpg"
                             alt="Leather jacket"
@@ -354,5 +373,42 @@
                 <p>© 2026 FashionHub. All rights reserved.</p>
             </div>
         </footer>
+
+        <!-- ====== JS Code (Search / Filter) ====== -->
+         <script>
+            const searchInput = document.getElementById("searchInput");
+            const productCards = document.querySelectorAll(".product-card");
+            const categoryFilters = document.querySelectorAll(".filter-category");
+
+            function filterProducts() {
+                const searchValue = searchInput.value.toLowerCase();
+                const selectedCategories = Array.from(categoryFilters)
+                    .filter(cb => cb.checked)
+                    .map(cb => cb.value);
+
+                productCards.forEach(card => {
+                    const name = card.dataset.name;
+                    const category = card.dataset.category;
+
+                    const matchesSearch = name.includes(searchValue);
+                    const matchesCategory = selectedCategories.length === 0 || 
+                    selectedCategories.some(cat => category.includes(cat));
+
+                    if (matchesSearch && matchesCategory) {
+                        card.style.display = "block";
+                    } else {
+                        card.style.display = "none";
+                    }
+                });
+            }
+
+            // Search Typing
+            searchInput.addEventListener("input", filterProducts);
+
+            // Checkbox Click
+            categoryFilters.forEach(cb => {
+                cb.addEventListener("change", filterProducts);
+            });
+        </script>
     </body>
 </html>
