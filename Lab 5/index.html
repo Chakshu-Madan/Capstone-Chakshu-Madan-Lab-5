@@ -29,7 +29,8 @@
                 </ul>
 
                 <div class="nav__actions">
-                    <input type="search" id ="searchInout"class="nav__search" placeholder="Search Products" aria-label="Search products"/>
+                    <input type="search" id ="searchInput" class="nav__search" 
+                        placeholder="Search Products" aria-label="Search products"/>
                     <a href="login.html" class="btn btn--ghost">Login</a>
                     <a href="signup.html" class="btn btn--ghost">Sign Up</a>
                     <button class="icon-button" aria-label="View cart">
@@ -45,7 +46,7 @@
                     <div class="hero__text">
                         <p class="hero__badge">New Season • 2026</p>
                         <h1 class="hero__title">
-                        Step into<span>Style</span> with FashionHub
+                        Step into <span>Style</span> with FashionHub
                         </h1>
                         <p class="hero__subtitle">
                         Discover curated outfits, fresh drops, and exclusive deals tailored for you.
@@ -79,22 +80,24 @@
             <section class="layout container">
                 <!-- Sidebar Filters -->
                 <aside class="filters" aria-label="Product filters">
-                    <h2 class="filters__title">Filters</h2>
+                    <center><button id="applyFilters" class="btn btn--primary btn--small">
+                        Apply Filters
+                    </button></center>
 
                     <!-- Category filter -->
                     <section class="filters__group">
                         <h3 class="filters__heading">Category</h3>
                         <label class="filters__option">
-                            <input type="checkbox" value="men" class="filter-category" /> Men
+                            <input type="checkbox" value="men" class="filter-gender" /> Men
                         </label>
                         <label class="filters__option">
-                            <input type="checkbox" value="women" class="filter-category" /> Women
+                            <input type="checkbox" value="women" class="filter-gender" /> Women
                         </label>
                         <label class="filters__option">
-                            <input type="checkbox" value="accessories" class="filter-category" /> Accessories
+                            <input type="checkbox" value="kids" class="filter-gender" /> Kids
                         </label>
                         <label class="filters__option">
-                            <input type="checkbox" value="sneakers" class="filter-category" /> Sneakers
+                            <input type="checkbox" value="footwear" class="filter-type" /> Footwear
                         </label>
                     </section>
 
@@ -102,35 +105,36 @@
                     <section class="filters__group">
                         <h3 class="filters__heading">Price</h3>
                         <label class="filters__option">
-                            <input type="radio" name="price" /> Under ₹999
+                            <input type="checkbox" name="price" /> Under ₹499
                         </label>
                         <label class="filters__option">
-                            <input type="radio" name="price" /> ₹1000 – ₹2499
+                            <input type="checkbox" name="price" /> Under ₹999
                         </label>
                         <label class="filters__option">
-                            <input type="radio" name="price" /> ₹2500 – ₹4999
+                            <input type="checkbox" name="price" /> Under ₹1499 
                         </label>
                         <label class="filters__option">
-                            <input type="radio" name="price" /> ₹5000 & above
+                            <input type="checkbox" name="price" /> Under ₹1999
                         </label>
                     </section>
 
-                     <!-- Color filter -->
+                     <!-- Accessories -->
                     <section class="filters__group">
-                        <h3 class="filters__heading">Color</h3>
+                        <h3 class="filters__heading">Accessories</h3>
                         <label class="filters__option">
-                            <input type="checkbox" /> Black
+                            <input type="checkbox" /> Sunglasses
                         </label>
                         <label class="filters__option">
-                            <input type="checkbox" /> White
+                            <input type="checkbox" /> Elctronics
                         </label>
                         <label class="filters__option">
-                            <input type="checkbox" /> Blue
+                            <input type="checkbox" /> Jwellery
                         </label>
                         <label class="filters__option">
-                            <input type="checkbox" /> Pastel
+                            <input type="checkbox" /> Watches
                         </label>
                     </section>
+
                 </aside>
 
                 <!-- Product listing -->
@@ -182,8 +186,8 @@
                         <!-- Product Card 3 -->
                         <article class="product-card fade-up fade-delay-2"
                                 data-name="chunky white sneakers"
-                                data-category="men"
-                                data-type="sneakers shoes">
+                                data-category="men footwear"
+                                data-type="sneaker shoes">
                             <img
                             src="images/product-3.jpg"
                             alt="White chunky sneakers"
@@ -191,7 +195,7 @@
                             />
                             <div class="product-card__body">
                                 <h3 class="product-card__title">Chunky White Sneakers</h3>
-                                <p class="product-card__category">Men • Sneakers</p>
+                                <p class="product-card__category">Men • Footwear </p>
                                 <p class="product-card__price">₹3,299</p>
                                 <button class="btn btn--small btn--primary">
                                     Add to Cart
@@ -201,7 +205,7 @@
                         <!-- Product Card 4 -->
                         <article class="product-card fade-up fade-delay-2"
                                 data-name="minimal beige tote"
-                                data-category="accessories"
+                                data-category="women accessories"
                                 data-type="accessories bag">
                             <img
                             src="images/product-4.jpg"
@@ -376,25 +380,45 @@
 
         <!-- ====== JS Code (Search / Filter) ====== -->
          <script>
+            document.addEventListener("DOMContentLoaded" ,  () => {
+
             const searchInput = document.getElementById("searchInput");
+            const apllyBtn = document.getElementById("applyFilters");
             const productCards = document.querySelectorAll(".product-card");
             const categoryFilters = document.querySelectorAll(".filter-category");
 
-            function filterProducts() {
-                const searchValue = searchInput.value.toLowerCase();
-                const selectedCategories = Array.from(categoryFilters)
-                    .filter(cb => cb.checked)
-                    .map(cb => cb.value);
+            function applyFiltering() {
+                const selectedGenders = Array.from(
+                    document.querySelectorAll(".filter-gender:checked")
+                ).map(cb => cb.value);
+
+                const selectedTypes = Array.from(
+                    document.querySelectorAll(".filter-type:checked")
+                ).map(cb => cb.value);
 
                 productCards.forEach(card => {
-                    const name = card.dataset.name;
-                    const category = card.dataset.category;
+                    const category = (card.dataset.category || "").toLowerCase();
 
-                    const matchesSearch = name.includes(searchValue);
-                    const matchesCategory = selectedCategories.length === 0 || 
-                    selectedCategories.some(cat => category.includes(cat));
+                    // GENDER LOGIC -> OR
+                    let matchesGender = true;
 
-                    if (matchesSearch && matchesCategory) {
+                    if (selectedGenders.length > 0) {
+                        matchesGender = selectedGenders.some(gender => 
+                            category.includes(gender) || 
+                            (gender === "men" && category.includes("unisex"))
+                        );
+                    }
+
+                    // TYPE LOGIC -> AND
+                    let matchesType = true;
+
+                    if (selectedTypes.length > 0) {
+                        matchesType = selectedTypes.every(type => 
+                        category.includes(type)
+                        );
+                    }
+
+                    if (matchesGender && matchesType) {
                         card.style.display = "block";
                     } else {
                         card.style.display = "none";
@@ -402,13 +426,18 @@
                 });
             }
 
-            // Search Typing
-            searchInput.addEventListener("input", filterProducts);
+            /* APPLY FILTER BUTTON */
+            apllyBtn.addEventListener("click", applyFiltering);
 
-            // Checkbox Click
-            categoryFilters.forEach(cb => {
-                cb.addEventListener("change", filterProducts);
+            /* Search when Enter is Pressed */
+            searchInput.addEventListener("keydown", (e) => {
+                if (e.key === "Enter") {
+                    e.preventDefault();
+                    apllyFiltering();
+                }
             });
+
+        });
         </script>
     </body>
 </html>
