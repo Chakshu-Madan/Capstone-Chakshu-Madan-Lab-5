@@ -146,10 +146,10 @@
 
                     <div class="product-grid">
                         <!-- Product Card 1 -->
-                        <article class="product-card fade-up fade-delay-2"
+                        <article class="product-card"
                                 data-name="oversized black hoodie"
-                                data-category="men unisex"
-                                data-type="hoodie streetwear">
+                                data-gender="unisex"
+                                data-type="hoodie">
                             <img
                                 src="images/product-1.jpg"
                                 alt="Oversized black hoodie"
@@ -165,10 +165,10 @@
                             </div>
                         </article>
                         <!-- Product Card 2 -->
-                        <article class="product-card fade-up fade-delay-2"
+                        <article class="product-card"
                                 data-name="pastel cropped jacket"
-                                data-category="women"
-                                data-type="jacket casual">
+                                data-gender="women"
+                                data-type="jacket">
                             <img
                                 src="images/product-2.jpg"
                                 alt="Pastel cropped jacket"
@@ -184,10 +184,10 @@
                             </div>
                         </article>             
                         <!-- Product Card 3 -->
-                        <article class="product-card fade-up fade-delay-2"
+                        <article class="product-card"
                                 data-name="chunky white sneakers"
-                                data-category="men footwear"
-                                data-type="sneaker shoes">
+                                data-gender="men"
+                                data-type="footwear">
                             <img
                             src="images/product-3.jpg"
                             alt="White chunky sneakers"
@@ -195,7 +195,7 @@
                             />
                             <div class="product-card__body">
                                 <h3 class="product-card__title">Chunky White Sneakers</h3>
-                                <p class="product-card__category">Men • Footwear </p>
+                                <p class="product-card__category">Footwear </p>
                                 <p class="product-card__price">₹3,299</p>
                                 <button class="btn btn--small btn--primary">
                                     Add to Cart
@@ -203,10 +203,10 @@
                             </div>
                         </article>
                         <!-- Product Card 4 -->
-                        <article class="product-card fade-up fade-delay-2"
+                        <article class="product-card"
                                 data-name="minimal beige tote"
-                                data-category="women accessories"
-                                data-type="accessories bag">
+                                data-gender="women"
+                                data-type="accessories">
                             <img
                             src="images/product-4.jpg"
                             alt="Minimal beige tote bag"
@@ -222,10 +222,10 @@
                             </div>
                         </article>  
                         <!-- Product Card 5 -->
-                        <article class="product-card fade-up fade-delay-2"
+                        <article class="product-card"
                                 data-name="relaxed fit jeans"
-                                data-category="men"
-                                data-type="jeans denim">
+                                data-gender="men"
+                                data-type="jeans">
                             <img
                             src="images/product-5.jpg"
                             alt="Blue relaxed fit jeans"
@@ -241,10 +241,10 @@
                             </div>
                         </article>           
                         <!-- Product Card 6 -->
-                        <article class="product-card fade-up fade-delay-2"
+                        <article class="product-card"
                                 data-name="leather jacket"
-                                data-category="men"
-                                data-type="jacket leather">
+                                data-gender="men"
+                                data-type="jacket">
                             <img
                             src="images/product-6.jpg"
                             alt="Leather jacket"
@@ -378,65 +378,79 @@
             </div>
         </footer>
 
+
         <!-- ====== JS Code (Search / Filter) ====== -->
          <script>
-            document.addEventListener("DOMContentLoaded" ,  () => {
+            document.addEventListener("DOMContentLoaded",  () => {
 
+            const applyBtn = document.getElementById("applyFilters");
             const searchInput = document.getElementById("searchInput");
-            const apllyBtn = document.getElementById("applyFilters");
             const productCards = document.querySelectorAll(".product-card");
-            const categoryFilters = document.querySelectorAll(".filter-category");
 
-            function applyFiltering() {
-                const selectedGenders = Array.from(
-                    document.querySelectorAll(".filter-gender:checked")
-                ).map(cb => cb.value);
+            // Show all products initially  
+            productCards.forEach(card => card.classList.add("is-visible"));
 
-                const selectedTypes = Array.from(
-                    document.querySelectorAll(".filter-type:checked")
-                ).map(cb => cb.value);
-
-                productCards.forEach(card => {
-                    const category = (card.dataset.category || "").toLowerCase();
-
-                    // GENDER LOGIC -> OR
-                    let matchesGender = true;
-
-                    if (selectedGenders.length > 0) {
-                        matchesGender = selectedGenders.some(gender => 
-                            category.includes(gender) || 
-                            (gender === "men" && category.includes("unisex"))
-                        );
-                    }
-
-                    // TYPE LOGIC -> AND
-                    let matchesType = true;
-
-                    if (selectedTypes.length > 0) {
-                        matchesType = selectedTypes.every(type => 
-                        category.includes(type)
-                        );
-                    }
-
-                    if (matchesGender && matchesType) {
-                        card.style.display = "block";
-                    } else {
-                        card.style.display = "none";
-                    }
-                });
-            }
-
-            /* APPLY FILTER BUTTON */
-            apllyBtn.addEventListener("click", applyFiltering);
-
-            /* Search when Enter is Pressed */
+            applyBtn.addEventListener("click", applyFiltering);
             searchInput.addEventListener("keydown", (e) => {
                 if (e.key === "Enter") {
                     e.preventDefault();
-                    apllyFiltering();
+                    applyFiltering();
                 }
-            });
+            })
 
+            function applyFiltering() {
+
+                const selectedGenders = Array.from(
+                    document.querySelectorAll(".filter-gender:checked")
+                ).map(cb => cb.value.toLowerCase());
+
+                const selectedTypes = Array.from(
+                    document.querySelectorAll(".filter-type:checked")
+                ).map(cb => cb.value.toLowerCase());
+
+                const searchQuery = searchInput.value.trim().toLowerCase();
+
+                productCards.forEach(card => {
+                    const gender = (card.dataset.gender || "").toLowerCase();
+                    const type = (card.dataset.type || "").toLowerCase();
+                    const name = (card.dataset.name || "").toLowerCase();
+
+                    // ====== GENDER FILTER (OR) ======
+                    let genderMatch = true;
+                    if (selectedGenders.length > 0) {
+                        genderMatch = selectedGenders.some(g => 
+                            gender === g || (gender === "unisex")
+                        );
+                    }
+
+                    // ====== TYPE FILTER (AND) ======
+                    let typeMatch = true;
+                    if (selectedTypes.length > 0) {
+                        typeMatch = selectedTypes.includes(type);
+                    }
+
+                    // ====== SEARCH FILTER ======
+                    let searchMatch = true;
+                    if (searchQuery !== "") {
+                        searchMatch = name.includes(searchQuery);
+                    }
+
+                    // ====== FINAL DECISION ======
+                    if (genderMatch && typeMatch && searchMatch) {
+                        card.classList.remove("is-collapsed");
+                        requestAnimationFrame(() => {
+                            card.classList.remove("is-hidden");
+                        });
+                    } else {
+                        card.classList.add("is-hidden");
+
+                        // Wait for fade-out before collapsing layout
+                        setTimeout(() => {
+                            card.classList.add("is-collapsed");
+                        }, 350); 
+                    }
+                });
+            }
         });
         </script>
     </body>
